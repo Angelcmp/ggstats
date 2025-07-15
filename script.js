@@ -1,45 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('script.js cargado correctamente.');
-
-    const cards = document.querySelectorAll('.news-item, .stat-card');
     const themeToggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
-
-    // Intersection Observer para animaciones de tarjetas
-    const observerOptions = {
-        root: null, // viewport
-        rootMargin: '0px',
-        threshold: 0.1 // 10% de la tarjeta visible
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-                observer.unobserve(entry.target); // Deja de observar una vez que la animación se ha aplicado
-            }
-        });
-    }, observerOptions);
-
-    cards.forEach(card => {
-        observer.observe(card);
-    });
-
-    // Lógica de modo claro/oscuro
     const currentTheme = localStorage.getItem('theme');
+
+    function updateThemeButton() {
+        // Fade out
+        themeToggleBtn.classList.remove('fade-in');
+        themeToggleBtn.classList.add('fade-out');
+        setTimeout(() => {
+            if (body.classList.contains('light-mode')) {
+                themeToggleBtn.innerHTML = '<span style="font-size:1.3em;color:#FFD600;">🌞</span>';
+            } else {
+                themeToggleBtn.innerHTML = '<span style="font-size:1.3em;color:#222;">🌚</span>';
+            }
+            // Fade in
+            themeToggleBtn.classList.remove('fade-out');
+            themeToggleBtn.classList.add('fade-in');
+            setTimeout(() => {
+                themeToggleBtn.classList.remove('fade-in');
+            }, 350);
+        }, 150);
+    }
 
     if (currentTheme) {
         body.classList.add(currentTheme);
-        if (currentTheme === 'light-mode') {
-            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-        } else {
-            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-        }
+        updateThemeButton();
     } else {
-        // Por defecto, si no hay preferencia, usa el modo oscuro y guarda la preferencia
-        body.classList.add('dark-mode'); // Asegurarse de que el modo oscuro sea el predeterminado si no hay preferencia
+        body.classList.add('dark-mode');
         localStorage.setItem('theme', 'dark-mode');
-        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        updateThemeButton();
     }
 
     themeToggleBtn.addEventListener('click', () => {
@@ -47,12 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             body.classList.remove('light-mode');
             body.classList.add('dark-mode');
             localStorage.setItem('theme', 'dark-mode');
-            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
         } else {
             body.classList.remove('dark-mode');
             body.classList.add('light-mode');
             localStorage.setItem('theme', 'light-mode');
-            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
         }
+        updateThemeButton();
     });
 });
