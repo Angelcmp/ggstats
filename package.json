@@ -1,0 +1,6 @@
+{
+  "name": "ggstats",
+  "workspaces": [
+    "packages/*"
+  ]
+}
