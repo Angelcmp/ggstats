@@ -1,31 +1,47 @@
 # Tareas Pendientes - ggstats
 
-## Prioridad Alta
+## Funcionalidades Implementadas
+
+- [x] **Integración con OpenDota API (Dota 2):**
+    - Se creó el módulo `dota2` con `Dota2Service` y `Dota2Controller`.
+    - Se implementaron endpoints para:
+        - Buscar jugadores por nombre (`/dota2/search/:playerName`)
+        - Obtener estadísticas de jugador por Account ID (`/dota2/player/:accountId`)
+        - Obtener registro de victorias/derrotas por Account ID (`/dota2/player/:accountId/winloss`)
+    - Se integró `Dota2Module` en `AppModule`.
+    - Se verificó la funcionalidad básica de los endpoints.
+
+- [x] **Expansión de Endpoints de Riot API:**
+    - Se añadió el endpoint de rotaciones de campeones (`/riot-api/champion-rotations/:region`).
+    - Se añadió el endpoint de lista de partidas de Valorant (`/riot-api/valorant/matchlist/:region/:gameName/:tagLine`).
+    - Se corrigieron errores de sintaxis en `riot-api.service.ts` y `riot-api.controller.ts`.
+
+## Prioridad Alta (Pendiente)
 
 - [ ] **Investigar y Resolver el Error de Autorización de Riot API (401/403):**
-    - **Causa:** La clave de desarrollo de Riot API sigue resultando en errores de autorización (`401 Unauthorized` o `403 Forbidden`) a pesar de las actualizaciones y la verificación de la carga de la clave.
-    - **Acciones:**
-        - [ ] Confirmar la validez y vigencia de la clave de desarrollo de Riot API (generar una nueva si es necesario).
-        - [ ] Verificar que la clave se esté cargando correctamente en `RiotApiService` (ya se añadió un `console.log` para esto).
-        - [ ] Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
-        - [ ] Considerar el uso de un proxy si las restricciones de red son un problema.
-        - [ ] Explorar alternativas para obtener datos de invocador por nombre si la librería `@fightmegg/riot-api` no lo soporta directamente y la llamada `fetch` sigue fallando.
+    - **Estado Actual:** El problema persiste a pesar de la verificación de la clave y el cambio de región. Se ha decidido pivotar a Dota 2 por ahora, pero esta tarea sigue siendo relevante si se retoma la integración con Riot API.
+    - **Acciones Pendientes:**
+        - Reconfirmar la validez y permisos de la clave de desarrollo de Riot API para todas las APIs relevantes (LoL, Valorant, Account).
+        - Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
+        - Considerar el uso de un proxy o VPN si las restricciones de red son un problema.
 
-## Próximas Funcionalidades (Perfil de Invocador 2.0)
+## Próximas Funcionalidades (Dota 2)
 
 - [ ] **Backend (NestJS):**
-    - [ ] Crear un nuevo módulo para el análisis de perfil (`profile-analysis`).
-    - [ ] Definir el DTO para las "Tarjetas de Insight".
-    - [ ] Implementar la lógica para generar "Tarjetas de Insight" a partir de los datos de partidas.
-    - [ ] Crear un nuevo endpoint en la API para servir las "Tarjetas de Insight".
+    - [ ] Explorar y añadir más endpoints de OpenDota API (ej. héroes, partidas detalladas).
+    - [ ] Implementar caché para las llamadas a la API de OpenDota.
+    - [ ] Definir DTOs para los datos de Dota 2.
 - [ ] **Frontend (Next.js):**
-    - [ ] Crear un nuevo componente para mostrar las "Tarjetas de Insight".
-    - [ ] Integrar el nuevo componente en la página del perfil de invocador.
-    - [ ] Realizar la llamada a la API para obtener los datos de las "Tarjetas de Insight".
-    - [ ] Diseñar y estilizar las "Tarjetas de Insight" para que sean visualmente atractivas.
+    - [ ] Crear componentes para mostrar los datos de jugadores de Dota 2.
+    - [ ] Integrar los nuevos componentes en la interfaz de usuario.
+    - [ ] Diseñar y estilizar las vistas de perfil de jugador y estadísticas de Dota 2.
 
-## Otras Tareas
+## Próximas Funcionalidades (General)
 
 - [ ] **Configurar Pruebas Automatizadas:**
-    - [ ] Backend (NestJS): Configurar un framework de pruebas (ej. Jest) y escribir pruebas unitarias/de integración.
+    - [ ] Backend (NestJS): Configurar un framework de pruebas (ej. Jest) y escribir pruebas unitarias/de integración para los servicios y controladores.
     - [ ] Frontend (Next.js): Configurar un framework de pruebas (ej. Jest, React Testing Library) y escribir pruebas de componentes/integración.
+
+- [ ] **Refactorizar y Limpiar Código:**
+    - [ ] Revisar y mejorar la estructura del código, aplicando principios SOLID y patrones de diseño.
+    - [ ] Eliminar código comentado o temporal.
