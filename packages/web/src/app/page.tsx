@@ -1,4 +1,7 @@
+"use client";
+
 import SummonerSearch from '../components/SummonerSearch';
+import Dota2Search from '../components/Dota2Search';
 import { useState } from 'react';
 
 export default function Page() {
@@ -12,7 +15,7 @@ export default function Page() {
     setSummonerData(null);
     try {
       // Assuming your NestJS backend is running on port 3001
-      const response = await fetch(`http://localhost:3001/riot-api/summoner/euw1/${summonerName}`);
+      const response = await fetch(`/api/riot-api/summoner/euw1/${summonerName}`);
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -29,6 +32,7 @@ export default function Page() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h1 className="text-4xl font-bold mb-8">Welcome to ggstats!</h1>
       <SummonerSearch onSearch={handleSearch} />
+      <Dota2Search />
 
       {loading && <p className="mt-4 text-blue-600">Loading summoner data...</p>}
       {error && <p className="mt-4 text-red-600">Error: {error}</p>}

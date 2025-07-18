@@ -8,6 +8,7 @@
         - Buscar jugadores por nombre (`/dota2/search/:playerName`)
         - Obtener estadísticas de jugador por Account ID (`/dota2/player/:accountId`)
         - Obtener registro de victorias/derrotas por Account ID (`/dota2/player/:accountId/winloss`)
+        - Obtener partidas recientes por Account ID (`/dota2/player/:accountId/recentMatches`)
     - Se integró `Dota2Module` en `AppModule`.
     - Se verificó la funcionalidad básica de los endpoints.
 
@@ -27,14 +28,14 @@
 
 ## Próximas Funcionalidades (Dota 2)
 
-- [ ] **Backend (NestJS):**
-    - [ ] Explorar y añadir más endpoints de OpenDota API (ej. héroes, partidas detalladas).
-    - [ ] Implementar caché para las llamadas a la API de OpenDota.
-    - [ ] Definir DTOs para los datos de Dota 2.
-- [ ] **Frontend (Next.js):**
-    - [ ] Crear componentes para mostrar los datos de jugadores de Dota 2.
-    - [ ] Integrar los nuevos componentes en la interfaz de usuario.
-    - [ ] Diseñar y estilizar las vistas de perfil de jugador y estadísticas de Dota 2.
+- [x] **Backend (NestJS):**
+    - [x] Explorar y añadir más endpoints de OpenDota API (ej. héroes, partidas detalladas).
+    - [x] Implementar caché para las llamadas a la API de OpenDota.
+    - [x] Definir DTOs para los datos de Dota 2.
+- [x] **Frontend (Next.js):**
+    - [x] Crear componentes para mostrar los datos de jugadores de Dota 2.
+    - [x] Integrar los nuevos componentes en la interfaz de usuario.
+    - [x] Diseñar y estilizar las vistas de perfil de jugador y estadísticas de Dota 2.
 
 ## Próximas Funcionalidades (General)
 
