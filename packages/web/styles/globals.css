@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-background-main: #0A0A0A; /* Fondo principal */
+  --color-red-background: #4a0e12; /* Rojo oscuro para gradiente */
+  --color-text-main: #EAEAEA; /* Texto principal */
+  --color-text-hover: #FFFFFF; /* Texto en hover */
+  --color-gray-button: #1F2937; /* Gris para botones/barras */
+  --color-transparent-black: rgba(0, 0, 0, 0.3); /* Transparencia */
+  --color-accent-blue: #00bfff; /* Azul eléctrico/Cian */
+  --color-accent-purple: #8a2be2; /* Morado/Púrpura profundo */
+  --color-accent-orange: #ffae00; /* Naranja/Ámbar para acciones importantes */
+}

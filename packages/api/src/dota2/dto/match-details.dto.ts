@@ -1,0 +1,63 @@
+export interface PlayerInMatchDto {
+  account_id?: number;
+  player_slot: number;
+  hero_id: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+  last_hits: number;
+  denies: number;
+  gold_per_min: number;
+  xp_per_min: number;
+  hero_damage: number;
+  tower_damage: number;
+  hero_healing: number;
+  personaname?: string;
+  isRadiant: boolean;
+  item_0: number;
+  item_1: number;
+  item_2: number;
+  item_3: number;
+  item_4: number;
+  item_5: number;
+  backpack_0: number;
+  backpack_1: number;
+  backpack_2: number;
+  item_neutral: number;
+  item_neutral2: number;
+}
+
+export class MatchDetailsDto {
+  match_id: number;
+  barracks_status_dire: number;
+  barracks_status_radiant: number;
+  cluster: number;
+  dire_score: number;
+  duration: number;
+  engine: number;
+  first_blood_time: number;
+  game_mode: number;
+  human_players: number;
+  leagueid: number;
+  lobby_type: number;
+  match_seq_num: number;
+  negative_votes: number;
+  objectives?: any[];
+  patch: number;
+  players: PlayerInMatchDto[];
+  positive_votes: number;
+  radiant_gold_adv?: number[];
+  radiant_score: number;
+  radiant_win: boolean;
+  radiant_xp_adv?: number[];
+  region: number;
+  replay_salt?: number;
+  replay_url?: string;
+  start_time: number;
+  teamfights?: any[];
+  tower_status_dire: number;
+  tower_status_radiant: number;
+  version?: number;
+  series_id?: number;
+  series_type?: number;
+}

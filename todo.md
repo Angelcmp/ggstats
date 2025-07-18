@@ -32,16 +32,29 @@
     - [x] Explorar y añadir más endpoints de OpenDota API (ej. héroes, partidas detalladas).
     - [x] Implementar caché para las llamadas a la API de OpenDota.
     - [x] Definir DTOs para los datos de Dota 2.
+    - [x] Añadir endpoints para héroes y detalles de partidas.
+    - [x] Añadir endpoint para ítems.
+    - [x] Definir DTO para ítems.
+
 - [x] **Frontend (Next.js):**
     - [x] Crear componentes para mostrar los datos de jugadores de Dota 2.
     - [x] Integrar los nuevos componentes en la interfaz de usuario.
     - [x] Diseñar y estilizar las vistas de perfil de jugador y estadísticas de Dota 2.
+    - [x] Crear página de héroes (`/heroes`).
+    - [x] Actualizar barra de navegación con enlace a héroes.
+    - [x] Crear página de detalles de partida (`/matches/[matchId]`).
+    - [x] Integrar enlaces a detalles de partida en el perfil del jugador.
+    - [x] Crear página de ítems (`/items`).
+    - [x] Actualizar barra de navegación con enlace a ítems.
+    - [x] Asegurar que los estilos visuales se apliquen correctamente (incluyendo la imagen de fondo y la configuración de Tailwind).
+    - [x] Mostrar detalles de partida (jugadores, héroes, ítems).
 
 ## Próximas Funcionalidades (General)
 
-- [ ] **Configurar Pruebas Automatizadas:**
-    - [ ] Backend (NestJS): Configurar un framework de pruebas (ej. Jest) y escribir pruebas unitarias/de integración para los servicios y controladores.
-    - [ ] Frontend (Next.js): Configurar un framework de pruebas (ej. Jest, React Testing Library) y escribir pruebas de componentes/integración.
+- [ ] **Implementar más cambios de estadísticas en la página web.**
+- [x] **Configurar Pruebas Automatizadas:**
+    - [x] Backend (NestJS): Configurar un framework de pruebas (ej. Jest) y escribir pruebas unitarias/de integración para los servicios y controladores.
+    - [x] Frontend (Next.js): Configurar un framework de pruebas (ej. Jest, React Testing Library) y escribir pruebas de componentes/integración.
 
 - [ ] **Refactorizar y Limpiar Código:**
     - [ ] Revisar y mejorar la estructura del código, aplicando principios SOLID y patrones de diseño.

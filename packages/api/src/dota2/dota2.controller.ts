@@ -5,6 +5,9 @@ import { SearchPlayerDto } from './dto/search-player.dto';
 import { PlayerStatsDto } from './dto/player-stats.dto';
 import { PlayerWinLossDto } from './dto/player-win-loss.dto';
 import { RecentMatchesDto } from './dto/recent-matches.dto';
+import { HeroDto } from './dto/hero.dto';
+import { MatchDetailsDto } from './dto/match-details.dto';
+import { ItemDto } from './dto/item.dto';
 
 @Controller('dota2')
 @UseInterceptors(CacheInterceptor)
@@ -33,5 +36,23 @@ export class Dota2Controller {
   @CacheTTL(300000) // 5 minutes
   async getPlayerRecentMatches(@Param('accountId') accountId: number): Promise<RecentMatchesDto[]> {
     return this.dota2Service.getPlayerRecentMatches(accountId);
+  }
+
+  @Get('heroes')
+  @CacheTTL(3600000) // 1 hour
+  async getHeroes(): Promise<HeroDto[]> {
+    return this.dota2Service.getHeroes();
+  }
+
+  @Get('matches/:matchId')
+  @CacheTTL(300000) // 5 minutes
+  async getMatchDetails(@Param('matchId') matchId: number): Promise<MatchDetailsDto> {
+    return this.dota2Service.getMatchDetails(matchId);
+  }
+
+  @Get('items')
+  @CacheTTL(3600000) // 1 hour
+  async getItems(): Promise<ItemDto> {
+    return this.dota2Service.getItems();
   }
 }

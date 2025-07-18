@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { PlayerStatsDto } from '../../packages/api/src/dota2/dto/player-stats.dto';
 import { PlayerWinLossDto } from '../../packages/api/src/dota2/dto/player-win-loss.dto';
 import { RecentMatchesDto } from '../../packages/api/src/dota2/dto/recent-matches.dto';
+import { formatTimeAgo } from '../utils/timeFormatter';
 
 interface Dota2PlayerProfileProps {
   accountId: number;
@@ -72,16 +74,19 @@ export default function Dota2PlayerProfile({ accountId }: Dota2PlayerProfileProp
       {recentMatches && recentMatches.length > 0 ? (
         <ul className="space-y-3">
           {recentMatches.map((match) => (
-            <li key={match.match_id} className="bg-gray-50 p-4 rounded-md shadow-sm flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-700">Match ID: <span className="text-blue-600">{match.match_id}</span></p>
-                <p className="text-sm text-gray-500">Duration: {Math.floor(match.duration / 60)}:{match.duration % 60 < 10 ? '0' : ''}{match.duration % 60}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">KDA: {match.kills}/{match.deaths}/{match.assists}</p>
-                <p className="text-sm text-gray-600">GPM: {match.gold_per_min} | XPM: {match.xp_per_min}</p>
-              </div>
-            </li>
+            <Link href={`/matches/${match.match_id}`} key={match.match_id}>
+              <li className="bg-gray-50 p-4 rounded-md shadow-sm flex justify-between items-center cursor-pointer">
+                <div>
+                  <p className="font-medium text-gray-700">Match ID: <span className="text-blue-600">{match.match_id}</span></p>
+                  <p className="text-sm text-gray-500">Duration: {Math.floor(match.duration / 60)}:{match.duration % 60 < 10 ? '0' : ''}{match.duration % 60}</p>
+                  <p className="text-sm text-gray-500">{formatTimeAgo(match.start_time)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">KDA: {match.kills}/{match.deaths}/{match.assists}</p>
+                  <p className="text-sm text-gray-600">GPM: {match.gold_per_min} | XPM: {match.xp_per_min}</p>
+                </div>
+              </li>
+            </Link>
           ))}
         </ul>
       ) : (

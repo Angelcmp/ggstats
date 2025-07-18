@@ -4,6 +4,9 @@ import { SearchPlayerDto } from './dto/search-player.dto';
 import { PlayerStatsDto } from './dto/player-stats.dto';
 import { PlayerWinLossDto } from './dto/player-win-loss.dto';
 import { RecentMatchesDto } from './dto/recent-matches.dto';
+import { HeroDto } from './dto/hero.dto';
+import { MatchDetailsDto } from './dto/match-details.dto';
+import { ItemDto } from './dto/item.dto';
 
 @Injectable()
 export class Dota2Service {
@@ -59,6 +62,45 @@ export class Dota2Service {
       return response.json();
     } catch (error) {
       console.error('[Dota2Service] Error fetching player recent matches:', error);
+      throw error;
+    }
+  }
+
+  async getHeroes(): Promise<HeroDto[]> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/heroes`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching heroes:', error);
+      throw error;
+    }
+  }
+
+  async getMatchDetails(matchId: number): Promise<MatchDetailsDto> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/matches/${matchId}`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching match details:', error);
+      throw error;
+    }
+  }
+
+  async getItems(): Promise<ItemDto> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/items`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching items:', error);
       throw error;
     }
   }
