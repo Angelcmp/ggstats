@@ -52,7 +52,19 @@ export class Dota2Controller {
 
   @Get('items')
   @CacheTTL(3600000) // 1 hour
-  async getItems(): Promise<ItemDto> {
+  async getItems(): Promise<Record<string, ItemDto>> {
     return this.dota2Service.getItems();
+  }
+
+  @Get('hero-stats')
+  @CacheTTL(3600000) // 1 hour
+  async getHeroStats(): Promise<any[]> {
+    return this.dota2Service.getHeroStats();
+  }
+
+  @Get('items/:itemId')
+  @CacheTTL(3600000) // 1 hour
+  async getItemById(@Param('itemId') itemId: number): Promise<ItemDto | undefined> {
+    return this.dota2Service.getItemById(itemId);
   }
 }

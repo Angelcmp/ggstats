@@ -17,6 +17,9 @@ export default function Navbar() {
           <Link href="/items" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
             Items
           </Link>
+          <Link href="/stats" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
+            Stats
+          </Link>
           <Link href="/lol" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
             League of Legends
           </Link>

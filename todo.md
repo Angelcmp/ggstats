@@ -52,6 +52,9 @@
 ## Próximas Funcionalidades (General)
 
 - [ ] **Implementar más cambios de estadísticas en la página web.**
+- [ ] **Mostrar User Rate y Win Rate para Ítems:**
+    - **Estado Actual:** No es posible con el endpoint actual de OpenDota API. Requiere encontrar un nuevo endpoint o implementar lógica compleja de cálculo.
+    - **Acciones Pendientes:** Investigar si OpenDota API ofrece un endpoint para estas estadísticas o considerar alternativas a futuro.
 - [x] **Configurar Pruebas Automatizadas:**
     - [x] Backend (NestJS): Configurar un framework de pruebas (ej. Jest) y escribir pruebas unitarias/de integración para los servicios y controladores.
     - [x] Frontend (Next.js): Configurar un framework de pruebas (ej. Jest, React Testing Library) y escribir pruebas de componentes/integración.

@@ -92,7 +92,7 @@ export class Dota2Service {
     }
   }
 
-  async getItems(): Promise<ItemDto> {
+  async getItems(): Promise<Record<string, ItemDto>> {
     try {
       const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/items`);
       if (!response.ok) {
@@ -101,6 +101,35 @@ export class Dota2Service {
       return response.json();
     } catch (error) {
       console.error('[Dota2Service] Error fetching items:', error);
+      throw error;
+    }
+  }
+
+  async getHeroStats(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/heroStats`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching hero stats:', error);
+      throw error;
+    }
+  }
+
+  async getItemById(itemId: number): Promise<ItemDto | undefined> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/items`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      const items: Record<string, ItemDto> = await response.json();
+      // Find the item by its ID
+      const foundItem = Object.values(items).find(item => item.id === Number(itemId));
+      return foundItem;
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching item by ID:', error);
       throw error;
     }
   }

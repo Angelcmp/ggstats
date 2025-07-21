@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ItemDto } from '../../../../packages/api/src/dota2/dto/item.dto';
 
 export default function ItemsPage() {
@@ -39,18 +40,18 @@ export default function ItemsPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {Object.keys(items).map((key) => {
           const item = items[key];
-          // Ensure item and localized_name exist before rendering
-          if (!item || !item.localized_name) return null;
+          // Ensure item and dname exist before rendering
+          if (!item || !item.dname) return null;
 
-          // Construct image URL using the item's internal name (key)
-          const imageUrl = `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/${key.replace('item_', '')}.png`;
+          // Construct image URL using the item's `img` property from the API
+          const imageUrl = `https://cdn.cloudflare.steamstatic.com${item.img}`;
 
           return (
-            <div key={item.id || key} className="bg-background-secondary p-4 rounded-lg shadow-lg border border-gray-800 hover:border-accent-blue hover:shadow-lg hover:shadow-accent-blue/30 transition-all duration-200 flex flex-col items-center text-center">
-              <img src={imageUrl} alt={item.localized_name} className="w-24 h-auto mb-2 rounded-md" />
-              <h2 className="text-xl font-exo2 font-semibold text-text-main uppercase">{item.localized_name}</h2>
+            <Link href={`/items/${item.id}`} key={item.id || key} className="bg-background-secondary p-4 rounded-lg shadow-lg border border-gray-800 hover:border-accent-blue hover:shadow-lg hover:shadow-accent-blue/30 transition-all duration-200 flex flex-col items-center text-center group">
+              <img src={imageUrl} alt={item.dname} className="w-24 h-auto mb-2 rounded-md group-hover:scale-105 transition-transform duration-200" />
+              <h2 className="text-xl font-exo2 font-semibold text-text-main uppercase group-hover:text-accent-blue">{item.dname}</h2>
               <p className="text-text-secondary font-roboto text-sm">Cost: {item.cost}</p>
-            </div>
+            </Link>
           );
         })}
       </div>
