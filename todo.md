@@ -26,6 +26,13 @@
         - Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
         - Considerar el uso de un proxy o VPN si las restricciones de red son un problema.
 
+- [ ] **Investigar y Resolver Conflicto de Dependencias en el Frontend:**
+    - **Estado Actual:** La instalación de nuevas dependencias (ej. `recharts`) falla debido a un conflicto con `ts-jest`. El error `ETARGET` con `ts-jest@^30.0.0` persiste incluso después de intentar varias soluciones (npm, bun, --legacy-peer-deps, reinstalación).
+    - **Acciones Pendientes:**
+        - Analizar el `bun.lock` para identificar la dependencia que requiere `ts-jest`.
+        - Considerar la posibilidad de eliminar y reinstalar toda la configuración de `jest` en el frontend.
+        - Explorar alternativas a `recharts` si el conflicto persiste.
+
 ## Próximas Funcionalidades (Dota 2)
 
 - [x] **Backend (NestJS):**
