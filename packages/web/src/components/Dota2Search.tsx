@@ -1,69 +1,98 @@
 'use client';
 
-import { useState } from 'react';
-import Dota2PlayerProfile from './Dota2PlayerProfile';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Dota2Search() {
+interface Player {
+  account_id: number;
+  personaname: string;
+  avatarfull: string;
+}
+
+const Dota2Search: React.FC = () => {
   const [playerName, setPlayerName] = useState('');
-  const [players, setPlayers] = useState([]);
+  const [searchResults, setSearchResults] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const handleSearch = async () => {
-    if (!playerName) return;
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!playerName.trim()) return;
+
     setLoading(true);
-    setSelectedAccountId(null); // Reset selected player on new search
+    setError(null);
+    setSearchResults([]);
+
     try {
-      const response = await fetch(`/api/dota2/search/${playerName}`);
-      const data = await response.json();
-      setPlayers(data);
-    } catch (error) {
-      console.error('Error searching player:', error);
+      const response = await fetch(`http://localhost:3002/dota2/search/${playerName}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data: Player[] = await response.json();
+      setSearchResults(data);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePlayerSelect = (accountId: number) => {
-    setSelectedAccountId(accountId);
+  const handlePlayerClick = (accountId: number) => {
+    router.push(`/dota2/player/${accountId}`);
   };
 
   return (
-    <div className="p-4 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Dota 2 Player Search</h2>
-      <div className="flex space-x-2 mb-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
+      <h1 className="text-5xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+        GGStats
+      </h1>
+      <p className="text-xl mb-10 text-gray-300">
+        Encuentra estadísticas de jugadores de Dota 2
+      </p>
+
+      <form onSubmit={handleSearch} className="w-full max-w-md flex flex-col sm:flex-row gap-4 mb-8">
         <input
           type="text"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
-          placeholder="Enter player name"
-          className="flex-grow p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Buscar jugador de Dota 2..."
+          className="flex-grow p-3 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
         />
         <button
-          onClick={handleSearch}
+          type="submit"
+          className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-300 text-lg font-semibold"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {loading ? 'Searching...' : 'Search'}
+          {loading ? 'Buscando...' : 'Buscar'}
         </button>
-      </div>
+      </form>
 
-      {players.length > 0 && !selectedAccountId && (
-        <ul className="space-y-2">
-          {players.map((player: any) => (
-            <li
-              key={player.account_id}
-              onClick={() => handlePlayerSelect(player.account_id)}
-              className="flex items-center space-x-3 p-2 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50"
-            >
-              <img src={player.avatarfull} alt={player.personaname} className="w-10 h-10 rounded-full" />
-              <p className="font-medium text-gray-800">{player.personaname}</p>
-            </li>
-          ))}
-        </ul>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      {searchResults.length > 0 && (
+        <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4 text-center text-blue-400">Resultados de la búsqueda</h2>
+          <ul>
+            {searchResults.map((player) => (
+              <li
+                key={player.account_id}
+                className="flex items-center p-3 mb-3 bg-gray-700 rounded-md cursor-pointer hover:bg-gray-600 transition-colors duration-200"
+                onClick={() => handlePlayerClick(player.account_id)}
+              >
+                <img
+                  src={player.avatarfull}
+                  alt={player.personaname}
+                  className="w-12 h-12 rounded-full mr-4 border-2 border-blue-400"
+                />
+                <span className="text-xl font-medium">{player.personaname}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
-
-      {selectedAccountId && <Dota2PlayerProfile accountId={selectedAccountId} />}
     </div>
   );
-}
+};
+
+export default Dota2Search;

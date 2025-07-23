@@ -1,33 +1,25 @@
+import React from 'react';
 import Link from 'next/link';
 
-export default function Navbar() {
+const Navbar: React.FC = () => {
   return (
-    <nav className="w-full bg-transparent absolute top-0 left-0 z-20">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-accent-blue text-3xl font-exo2 font-bold uppercase">
-          GGSTATS
+    <nav className="bg-gray-800 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link href="/" className="text-white text-2xl font-bold">
+          ggstats
         </Link>
-        <div className="flex items-center">
-          <Link href="/dota2" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
-            Dota 2
-          </Link>
-          <Link href="/heroes" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
+        <div className="space-x-4">
+          <Link href="/heroes" className="text-gray-300 hover:text-white">
             Heroes
           </Link>
-          <Link href="/items" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
+          <Link href="/items" className="text-gray-300 hover:text-white">
             Items
           </Link>
-          <Link href="/stats" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
-            Stats
-          </Link>
-          <Link href="/lol" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
-            League of Legends
-          </Link>
-          <Link href="/valorant" className="px-3 py-2 text-text-main hover:text-accent-blue transition-colors duration-300 font-roboto rounded-md">
-            Valorant
-          </Link>
+          {/* Add more navigation links as needed */}
         </div>
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;

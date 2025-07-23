@@ -2,5 +2,9 @@
   "name": "ggstats",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@types/recharts": "^2.0.1",
+    "recharts": "^3.1.0"
+  }
 }

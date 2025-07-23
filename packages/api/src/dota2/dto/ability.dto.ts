@@ -1,0 +1,32 @@
+export interface AbilityDto {
+  id: number;
+  name: string;
+  localized_name: string;
+  img: string;
+  dname: string;
+  behavior: string;
+  damage_type: string;
+  target_team: string;
+  notes: string;
+  mana_cost: string;
+  cooldown: string;
+  ability_id: number;
+  ability_type: number;
+  behavior_enum: number;
+  target_team_enum: number;
+  target_type_enum: number;
+  unit_target_team: number;
+  unit_target_type: number;
+  unit_target_flags: number;
+  spell_immunity: number;
+  spell_resist_type: number;
+  max_level: number;
+  cast_range: number[];
+  cast_point: number[];
+  channel_time: number;
+  duration: number[];
+  damage: number[];
+  mana_costs: number[];
+  cooldowns: number[];
+  attributes: any[];
+}

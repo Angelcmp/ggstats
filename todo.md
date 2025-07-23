@@ -42,6 +42,7 @@
     - [x] Añadir endpoints para héroes y detalles de partidas.
     - [x] Añadir endpoint para ítems.
     - [x] Definir DTO para ítems.
+    - [x] Añadir endpoint para habilidades (`/dota2/abilities`).
 
 - [x] **Frontend (Next.js):**
     - [x] Crear componentes para mostrar los datos de jugadores de Dota 2.
@@ -55,6 +56,10 @@
     - [x] Actualizar barra de navegación con enlace a ítems.
     - [x] Asegurar que los estilos visuales se apliquen correctamente (incluyendo la imagen de fondo y la configuración de Tailwind).
     - [x] Mostrar detalles de partida (jugadores, héroes, ítems).
+    - [x] Mejorar la página de detalles del héroe con estadísticas profesionales, de atributos y combate, y builds de ítems populares.
+    - [x] Implementar buscador, filtros y ordenamiento en la página de lista de héroes (`/heroes`).
+    - [x] Mejorar el diseño visual de la página de lista de héroes (colores, bordes, tipografía).
+    - [x] Mejorar el diseño visual de la página de ítems (tamaño de imágenes, filtros, búsqueda).
 
 ## Próximas Funcionalidades (General)
 
@@ -69,3 +74,25 @@
 - [ ] **Refactorizar y Limpiar Código:**
     - [ ] Revisar y mejorar la estructura del código, aplicando principios SOLID y patrones de diseño.
     - [ ] Eliminar código comentado o temporal.
+
+- [ ] **Implementar la página de detalles de ítems:**
+    - **Acciones Pendientes:** Crear una página para cada ítem donde se muestren sus propiedades, lore, etc.
+
+- [ ] **Explorar otras funcionalidades de la API de OpenDota:**
+    - **Acciones Pendientes:** Investigar otros endpoints para añadir más datos (ej. rankings, pro players, etc.).
+
+- [ ] **Trabajar en el diseño general:**
+    - **Acciones Pendientes:** Mejorar la estética y la experiencia de usuario en otras partes de la aplicación.
+
+- [ ] **Volver a intentar con las imágenes de héroes/habilidades:**
+    - **Estado Actual:** Las imágenes no cargan correctamente. Se necesita investigación o procesamiento adicional para las imágenes.
+    - **Acciones Pendientes:** Investigar nuevas soluciones o recursos para solucionar el problema de las imágenes.
+
+- [ ] **Implementar Builds de Habilidades Populares en la página de detalles del héroe:**
+    - **Estado Actual:** Los datos `ability_build` están disponibles, pero las imágenes de habilidades no cargan. Se necesita investigación o procesamiento adicional para las imágenes.
+
+- [ ] **Implementar Matchups (Buenos/Malos contra) en la página de detalles del héroe:**
+    - **Estado Actual:** Los datos `matchups` están disponibles en `heroStats`, pero requieren procesamiento para una visualización elaborada.
+
+- [ ] **Implementar Compañeros de Equipo (Friends & Enemies) en la página de detalles del héroe:**
+    - **Estado Actual:** Los datos `peers` están disponibles en `heroStats`, pero requieren procesamiento para una visualización elaborada.

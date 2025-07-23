@@ -67,4 +67,10 @@ export class Dota2Controller {
   async getItemById(@Param('itemId') itemId: number): Promise<ItemDto | undefined> {
     return this.dota2Service.getItemById(itemId);
   }
+
+  @Get('abilities')
+  @CacheTTL(3600000) // 1 hour
+  async getAbilities(): Promise<any> {
+    return this.dota2Service.getAbilities();
+  }
 }

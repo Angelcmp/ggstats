@@ -4,23 +4,14 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@nestjs/testing": "^11.1.5",
     "@types/bun": "latest",
-    "@types/jest": "^30.0.0",
-    "jest": "^30.0.4",
-    "prisma": "^6.12.0",
-    "ts-jest": "^30.0.0"
+    "prisma": "^6.12.0"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "scripts": {
-    "start": "bun run src/main.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./jest-e2e.json"
+    "start": "bun run src/main.ts"
   },
   "dependencies": {
     "@fightmegg/riot-api": "^0.0.20",

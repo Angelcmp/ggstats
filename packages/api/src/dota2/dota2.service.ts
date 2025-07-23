@@ -7,6 +7,7 @@ import { RecentMatchesDto } from './dto/recent-matches.dto';
 import { HeroDto } from './dto/hero.dto';
 import { MatchDetailsDto } from './dto/match-details.dto';
 import { ItemDto } from './dto/item.dto';
+import { AbilityDto } from './dto/ability.dto';
 
 @Injectable()
 export class Dota2Service {
@@ -130,6 +131,19 @@ export class Dota2Service {
       return foundItem;
     } catch (error) {
       console.error('[Dota2Service] Error fetching item by ID:', error);
+      throw error;
+    }
+  }
+
+  async getAbilities(): Promise<any> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/abilities`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching abilities:', error);
       throw error;
     }
   }
