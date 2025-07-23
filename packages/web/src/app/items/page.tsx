@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ItemDto } from '../../../../../packages/api/src/dota2/dto/item.dto';
 
 export default function ItemsPage() {
@@ -49,6 +50,10 @@ export default function ItemsPage() {
     { value: 'recipe', label: 'Recetas' },
   ];
 
+  const formatSlug = (name: string) => {
+    return name.toLowerCase().replace(/\s+/g, '-');
+  };
+
   if (loading) return <p>Loading items...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!items) return <p>No items found.</p>;
@@ -78,18 +83,20 @@ export default function ItemsPage() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {filteredItems.map((item) => (
-          <div key={item.id} className="bg-gray-800 p-3 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-gray-700 hover:border-blue-500">
-            <h2 className="text-lg font-semibold text-blue-400 mb-1">{item.dname}</h2>
-            {item.img && (
-              <img
-                src={`https://cdn.dota2.com${item.img}`}
-                alt={item.dname}
-                className="w-20 h-20 object-contain mb-2"
-                title={item.notes} // Use title for tooltip
-              />
-            )}
-            <p className="text-sm text-yellow-400 font-bold">{item.cost} gold</p>
-          </div>
+          <Link key={item.id} href={`/items/${formatSlug(item.dname || '')}`} passHref>
+            <div className="bg-gray-800 p-3 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-gray-700 hover:border-blue-500 h-full">
+              <h2 className="text-lg font-semibold text-blue-400 mb-1">{item.dname}</h2>
+              {item.img && (
+                <img
+                  src={`https://cdn.dota2.com${item.img}`}
+                  alt={item.dname}
+                  className="w-20 h-20 object-contain mb-2"
+                  title={item.notes} // Use title for tooltip
+                />
+              )}
+              <p className="text-sm text-yellow-400 font-bold">{item.cost} gold</p>
+            </div>
+          </Link>
         ))}
       </div>
     </div>

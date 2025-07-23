@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, UseInterceptors, Query } from '@nestjs/common';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Dota2Service } from './dota2.service';
 import { SearchPlayerDto } from './dto/search-player.dto';
@@ -8,6 +8,8 @@ import { RecentMatchesDto } from './dto/recent-matches.dto';
 import { HeroDto } from './dto/hero.dto';
 import { MatchDetailsDto } from './dto/match-details.dto';
 import { ItemDto } from './dto/item.dto';
+import { AbilityDto } from './dto/ability.dto';
+import { MetaHeroDto } from './dto/meta-hero.dto';
 
 @Controller('dota2')
 @UseInterceptors(CacheInterceptor)
@@ -72,5 +74,14 @@ export class Dota2Controller {
   @CacheTTL(3600000) // 1 hour
   async getAbilities(): Promise<any> {
     return this.dota2Service.getAbilities();
+  }
+
+  @Get('meta-heroes')
+  @CacheTTL(3600000) // 1 hour
+  async getMetaHeroes(
+    @Query('lobbyType') lobbyType?: number,
+    @Query('date') date?: number,
+  ): Promise<MetaHeroDto[]> {
+    return this.dota2Service.getMetaHeroes(lobbyType, date);
   }
 }

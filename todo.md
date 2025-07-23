@@ -21,6 +21,7 @@
 
 - [ ] **Investigar y Resolver el Error de Autorización de Riot API (401/403):**
     - **Estado Actual:** El problema persiste a pesar de la verificación de la clave y el cambio de región. Se ha decidido pivotar a Dota 2 por ahora, pero esta tarea sigue siendo relevante si se retoma la integración con Riot API.
+    - **Estimación:** Altamente variable, desde 30 minutos hasta varias horas o incluso días.
     - **Acciones Pendientes:**
         - Reconfirmar la validez y permisos de la clave de desarrollo de Riot API para todas las APIs relevantes (LoL, Valorant, Account).
         - Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
@@ -28,10 +29,13 @@
 
 - [ ] **Investigar y Resolver Conflicto de Dependencias en el Frontend:**
     - **Estado Actual:** La instalación de nuevas dependencias (ej. `recharts`) falla debido a un conflicto con `ts-jest`. El error `ETARGET` con `ts-jest@^30.0.0` persiste incluso después de intentar varias soluciones (npm, bun, --legacy-peer-deps, reinstalación).
+    - **Estimación:** 15-30 minutos para configurar ESLint; 5-10 minutos para revisar la diferencia de versiones de `recharts`.
     - **Acciones Pendientes:**
         - Analizar el `bun.lock` para identificar la dependencia que requiere `ts-jest`.
         - Considerar la posibilidad de eliminar y reinstalar toda la configuración de `jest` en el frontend.
         - Explorar alternativas a `recharts` si el conflicto persiste.
+        - Configurar ESLint para el frontend (15-30 minutos).
+        - Revisar la diferencia de versiones de `recharts` (5-10 minutos).
 
 ## Próximas Funcionalidades (Dota 2)
 

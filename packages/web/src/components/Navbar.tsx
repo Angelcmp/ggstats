@@ -15,6 +15,9 @@ const Navbar: React.FC = () => {
           <Link href="/items" className="text-gray-300 hover:text-white">
             Items
           </Link>
+          <Link href="/meta-heroes" className="text-gray-300 hover:text-white">
+            Meta Heroes
+          </Link>
           {/* Add more navigation links as needed */}
         </div>
       </div>
