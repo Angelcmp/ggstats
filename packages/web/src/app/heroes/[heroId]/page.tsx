@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
+import Matchups from '@/components/Hero/Matchups';
+
 interface Hero {
   id: number;
   name: string;
@@ -51,9 +53,9 @@ interface Ability {
 
 const HeroDetailsPage: React.FC = () => {
   const { heroId } = useParams();
-  const [heroDetails, setHeroDetails] = useState<Hero | null>(null);
+  const [heroData, setHeroData] = useState<any | null>(null);
+  const [allHeroes, setAllHeroes] = useState<Hero[]>([]);
   const [abilitiesData, setAbilitiesData] = useState<Record<string, Ability>>({});
-  const [heroStats, setHeroStats] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,30 +67,30 @@ const HeroDetailsPage: React.FC = () => {
       setError(null);
 
       try {
-        // Fetch all heroes to find the specific hero details
-        const heroesResponse = await fetch(`http://localhost:3002/dota2/heroes`);
-        if (!heroesResponse.ok) {
-          throw new Error(`Error fetching heroes: ${heroesResponse.statusText}`);
-        }
-        const allHeroes: Hero[] = await heroesResponse.json();
-        const foundHero = allHeroes.find(hero => hero.id === Number(heroId));
-        setHeroDetails(foundHero || null);
+        // Fetch all data from the new single endpoint
+        const [detailsResponse, heroesResponse, abilitiesResponse] = await Promise.all([
+          fetch(`http://localhost:3002/dota2/heroes/${heroId}/stats`),
+          fetch(`http://localhost:3002/dota2/heroes`),
+          fetch(`http://localhost:3002/dota2/abilities`)
+        ]);
 
-        // Fetch all abilities
-        const abilitiesResponse = await fetch(`http://localhost:3002/dota2/abilities`);
+        if (!detailsResponse.ok) {
+          throw new Error(`Error fetching hero stats: ${detailsResponse.statusText}`);
+        }
+        if (!heroesResponse.ok) {
+          throw new Error(`Error fetching heroes list: ${heroesResponse.statusText}`);
+        }
         if (!abilitiesResponse.ok) {
           throw new Error(`Error fetching abilities: ${abilitiesResponse.statusText}`);
         }
-        const abilities: Record<string, Ability> = await abilitiesResponse.json();
-        setAbilitiesData(abilities);
 
-        // Fetch hero stats
-        const heroStatsResponse = await fetch(`http://localhost:3002/dota2/hero-stats`);
-        if (!heroStatsResponse.ok) {
-          throw new Error(`Error fetching hero stats: ${heroStatsResponse.statusText}`);
-        }
-        const heroStatsData: any[] = await heroStatsResponse.json();
-        setHeroStats(heroStatsData);
+        const detailsData = await detailsResponse.json();
+        const heroesList = await heroesResponse.json();
+        const abilitiesList = await abilitiesResponse.json();
+
+        setHeroData(detailsData);
+        setAllHeroes(heroesList);
+        setAbilitiesData(abilitiesList);
 
       } catch (err: any) {
         setError(err.message);
@@ -120,121 +122,124 @@ const HeroDetailsPage: React.FC = () => {
     return <div className="flex justify-center items-center min-h-screen bg-gray-900 text-red-500">Error: {error}</div>;
   }
 
-  if (!heroDetails) {
+  if (!heroData) {
     return <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">No se encontraron detalles para este héroe.</div>;
   }
-
-  const heroStatsDetails = heroStats.find(stat => stat.id === Number(heroId));
-
-  console.log("Hero Details:", heroDetails);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-6xl mx-auto bg-gray-800 rounded-lg shadow-lg p-8">
         {/* Hero Overview Section */}
         <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10 bg-gray-700 p-6 rounded-lg shadow-md">
-          <div className="w-64 h-64 flex items-center justify-center bg-gray-800 rounded-lg border-4 border-blue-500 shadow-xl text-gray-400 text-center">
-            Imagen del Héroe no disponible
+          <div className="w-64 h-64 rounded-lg border-4 border-blue-500 shadow-xl overflow-hidden">
+            {heroData.img ? (
+              <img
+                src={`https://cdn.dota2.com${heroData.img}`}
+                alt={heroData.localized_name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-400 text-center">
+                Imagen no disponible
+              </div>
+            )}
           </div>
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-5xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              {heroDetails.localized_name}
+              {heroData.localized_name}
             </h1>
             <p className="text-xl text-gray-300 mb-4">
-              {heroDetails.primary_attr.toUpperCase()} - {heroDetails.attack_type}
+              {heroData.primary_attr.toUpperCase()} - {heroData.attack_type}
             </p>
             <p className="text-lg text-gray-400 mb-2">
-              <strong>Roles:</strong> {heroDetails.roles.join(', ')}
+              <strong>Roles:</strong> {heroData.roles.join(', ')}
             </p>
             <div className="grid grid-cols-2 gap-4 text-gray-300">
-              <p><strong>Salud Base:</strong> {heroDetails.base_health}</p>
-              <p><strong>Mana Base:</strong> {heroDetails.base_mana}</p>
-              <p><strong>Armadura Base:</strong> {heroDetails.base_armor}</p>
-              <p><strong>Velocidad de Movimiento:</strong> {heroDetails.move_speed}</p>
+              <p><strong>Salud Base:</strong> {heroData.base_health}</p>
+              <p><strong>Mana Base:</strong> {heroData.base_mana}</p>
+              <p><strong>Armadura Base:</strong> {heroData.base_armor}</p>
+              <p><strong>Velocidad de Movimiento:</strong> {heroData.move_speed}</p>
             </div>
           </div>
         </div>
 
         {/* General Statistics Section */}
-        {heroStatsDetails && (
-          <div className="mb-10 bg-gray-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-3xl font-bold mb-6 text-yellow-400 text-center">Estadísticas Generales</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
-              <div className="bg-gray-800 p-4 rounded-lg border border-green-500">
-                <p className="text-xl font-semibold text-green-400">Victorias Pro</p>
-                <p className="text-3xl font-bold">{heroStatsDetails.pro_win}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-blue-500">
-                <p className="text-xl font-semibold text-blue-400">Picks Pro</p>
-                <p className="text-3xl font-bold">{heroStatsDetails.pro_pick}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-red-500">
-                <p className="text-xl font-semibold text-red-400">Baneos Pro</p>
-                <p className="text-3xl font-bold">{heroStatsDetails.pro_ban}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-green-500">
-                <p className="text-xl font-semibold text-green-400">Victorias Públicas</p>
-                <p className="text-3xl font-bold">{heroStatsDetails.pub_win}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-blue-500">
-                <p className="text-xl font-semibold text-blue-400">Picks Públicos</p>
-                <p className="text-3xl font-bold">{heroStatsDetails.pub_pick}</p>
-              </div>
+        <div className="mb-10 bg-gray-700 p-6 rounded-lg shadow-md">
+          <h2 className="text-3xl font-bold mb-6 text-yellow-400 text-center">Estadísticas Generales</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
+            <div className="bg-gray-800 p-4 rounded-lg border border-green-500">
+              <p className="text-xl font-semibold text-green-400">Victorias Pro</p>
+              <p className="text-3xl font-bold">{heroData.pro_win}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-blue-500">
+              <p className="text-xl font-semibold text-blue-400">Picks Pro</p>
+              <p className="text-3xl font-bold">{heroData.pro_pick}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-red-500">
+              <p className="text-xl font-semibold text-red-400">Baneos Pro</p>
+              <p className="text-3xl font-bold">{heroData.pro_ban}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-green-500">
+              <p className="text-xl font-semibold text-green-400">Victorias Públicas</p>
+              <p className="text-3xl font-bold">{heroData.pub_win}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-blue-500">
+              <p className="text-xl font-semibold text-blue-400">Picks Públicos</p>
+              <p className="text-3xl font-bold">{heroData.pub_pick}</p>
             </div>
           </div>
-        )}
+        </div>
 
-        
-
-        {heroStatsDetails && (
-          <div className="mb-10 bg-gray-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-3xl font-bold mb-6 text-purple-400 text-center">Estadísticas de Atributos y Combate</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center">
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Ganancia STR</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.strength_gain}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Ganancia AGI</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.agility_gain}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Ganancia INT</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.intelligence_gain}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Rango de Ataque</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.attack_range}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Vel. Proyectil</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.projectile_speed}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Tasa de Ataque</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.attack_rate}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Visión Diurna</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.day_vision}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Visión Nocturna</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.night_vision}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Vel. Movimiento</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.move_speed}</p>
-              </div>
-              <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
-                <p className="text-lg font-semibold text-gray-300">Tasa de Giro</p>
-                <p className="text-2xl font-bold">{heroStatsDetails.turn_rate}</p>
-              </div>
+        <div className="mb-10 bg-gray-700 p-6 rounded-lg shadow-md">
+          <h2 className="text-3xl font-bold mb-6 text-purple-400 text-center">Estadísticas de Atributos y Combate</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center">
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Ganancia STR</p>
+              <p className="text-2xl font-bold">{heroData.strength_gain}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Ganancia AGI</p>
+              <p className="text-2xl font-bold">{heroData.agility_gain}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Ganancia INT</p>
+              <p className="text-2xl font-bold">{heroData.intelligence_gain}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Rango de Ataque</p>
+              <p className="text-2xl font-bold">{heroData.attack_range}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Vel. Proyectil</p>
+              <p className="text-2xl font-bold">{heroData.projectile_speed}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Tasa de Ataque</p>
+              <p className="text-2xl font-bold">{heroData.attack_rate}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Visión Diurna</p>
+              <p className="text-2xl font-bold">{heroData.day_vision}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Visión Nocturna</p>
+              <p className="text-2xl font-bold">{heroData.night_vision}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Vel. Movimiento</p>
+              <p className="text-2xl font-bold">{heroData.move_speed}</p>
+            </div>
+            <div className="bg-gray-800 p-4 rounded-lg border border-gray-600">
+              <p className="text-lg font-semibold text-gray-300">Tasa de Giro</p>
+              <p className="text-2xl font-bold">{heroData.turn_rate}</p>
             </div>
           </div>
+        </div>
+
+        {heroData.matchups && (
+          <Matchups matchups={heroData.matchups} heroes={allHeroes} />
         )}
 
-        
       </div>
     </div>
   );

@@ -42,25 +42,25 @@ export default function MetaHeroesPage() {
   ];
 
   const getTierBadge = (tier: number): JSX.Element => {
-    let bgColor = 'bg-gray-500';
-    let textColor = 'text-white';
+    let bgColor = 'bg-white/10'; // Glassmorphism base
+    let textColor = 'text-gray-300';
     let description = '';
 
     switch (tier) {
       case 1:
-        bgColor = 'bg-green-600';
+        textColor = 'text-green-400';
         description = 'Alto';
         break;
       case 2:
-        bgColor = 'bg-blue-600';
+        textColor = 'text-blue-400';
         description = 'Bueno';
         break;
       case 3:
-        bgColor = 'bg-yellow-600';
+        textColor = 'text-yellow-400';
         description = 'Medio';
         break;
       case 4:
-        bgColor = 'bg-red-600';
+        textColor = 'text-red-400';
         description = 'Bajo';
         break;
       default:
@@ -68,7 +68,7 @@ export default function MetaHeroesPage() {
     }
 
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${bgColor} ${textColor}`}>
+      <span className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm border border-white/10 ${bgColor} ${textColor}`}>
         {description}
       </span>
     );
@@ -229,25 +229,66 @@ export default function MetaHeroesPage() {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-gray-800 rounded-lg shadow-md">
           <thead>
-            <tr className="bg-gray-900">
-              <th className="p-3 text-left text-sm font-semibold text-gray-300 cursor-pointer" onClick={() => handleSort('name')}>Héroe {sortColumn === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
-              <th className="p-3 text-left text-sm font-semibold text-gray-300 cursor-pointer" onClick={() => handleSort('pick_rate')}>Pick Rate {sortColumn === 'pick_rate' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
-              <th className="p-3 text-left text-sm font-semibold text-gray-300 cursor-pointer" onClick={() => handleSort('win_rate')}>Win Rate {sortColumn === 'win_rate' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
-              <th className="p-3 text-left text-sm font-semibold text-gray-300 cursor-pointer" onClick={() => handleSort('tier')}>Tier {sortColumn === 'tier' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
+            <tr className="bg-gray-700">
+              <th className="p-4 text-left text-base font-bold text-gray-200 cursor-pointer" onClick={() => handleSort('name')}>Héroe {sortColumn === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
+              <th className="p-4 text-left text-base font-bold text-gray-200 cursor-pointer" onClick={() => handleSort('pick_rate')}>Pick Rate {sortColumn === 'pick_rate' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
+              <th className="p-4 text-left text-base font-bold text-gray-200 cursor-pointer" onClick={() => handleSort('win_rate')}>Win Rate {sortColumn === 'win_rate' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
+              <th className="p-4 text-left text-base font-bold text-gray-200 cursor-pointer" onClick={() => handleSort('tier')}>Tier {sortColumn === 'tier' && (sortDirection === 'asc' ? '▲' : '▼')}</th>
             </tr>
           </thead>
           <tbody>
-            {sortedHeroes.map((hero) => {
+            {sortedHeroes.map((hero, index) => {
               const stats = hero.mmr_stats[selectedMmr] || { pick_rate: 0, win_rate: 0, tier: 4 }; // Fallback for 'all' or missing data
+              const rowBgClass = index % 2 === 0 ? 'bg-white/5' : 'bg-white/10'; // Zebra striping
               return (
-                <tr key={hero.id} className="border-b border-gray-700 hover:bg-gray-700">
-                  <td className="p-3 flex items-center">
-                    <img src={hero.img} alt={hero.name} className="w-10 h-10 mr-3 rounded-full" />
-                    {hero.name}
+                <tr key={hero.id} className={`${rowBgClass} backdrop-blur-sm border border-white/10 hover:bg-white/20 transition-colors duration-200`}>
+                  <td className="p-4 flex items-center">
+                    <img src={hero.img} alt={hero.name} className="w-16 h-auto mr-3 rounded-md border border-gray-600 shadow-md" />
+                    <div className="flex flex-col items-start">
+                      <span className="font-semibold text-lg">{hero.name}</span>
+                      {hero.roles && hero.roles.length > 0 && (() => {
+                        let roleColorClass = 'text-gray-300'; // Default color
+                        switch (hero.roles[0]) {
+                          case 'Carry':
+                            roleColorClass = 'text-yellow-300';
+                            break;
+                          case 'Support':
+                            roleColorClass = 'text-blue-300';
+                            break;
+                          case 'Nuker':
+                            roleColorClass = 'text-red-300';
+                            break;
+                          case 'Disabler':
+                            roleColorClass = 'text-purple-300';
+                            break;
+                          case 'Initiator':
+                            roleColorClass = 'text-green-300';
+                            break;
+                          case 'Durable':
+                            roleColorClass = 'text-orange-300';
+                            break;
+                          case 'Escape':
+                            roleColorClass = 'text-cyan-300';
+                            break;
+                          case 'Pusher':
+                            roleColorClass = 'text-lime-300';
+                            break;
+                          case 'Jungler':
+                            roleColorClass = 'text-emerald-300';
+                            break;
+                          // Add more roles and colors as needed
+                        }
+                        return (
+                          <span className={`bg-white/10 backdrop-blur-sm border border-white/20 ${roleColorClass} text-xs px-2 py-0.5 rounded-full mt-1`}>
+                            {hero.roles[0]}
+                          </span>
+                        );
+                      })()}
+                    </div>
                   </td>
-                  <td className="p-3" title={`Pick Rate: ${stats.pick_rate}%`}>{stats.pick_rate}%</td>
-                  <td className="p-3" title={`Win Rate: ${stats.win_rate}%`}>{stats.win_rate}%</td>
-                  <td className="p-3 font-bold">{getTierBadge(stats.tier)}</td>
+                  <td className="p-4" title={`Pick Rate: ${stats.pick_rate}%`}>{stats.pick_rate}%</td>
+                  <td className="p-4" title={`Win Rate: ${stats.win_rate}%`}>{stats.win_rate}%</td>
+                  <td className="p-4 font-bold">{getTierBadge(stats.tier)}</td>
                 </tr>
               );
             })}

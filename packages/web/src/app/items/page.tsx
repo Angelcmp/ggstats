@@ -84,8 +84,24 @@ export default function ItemsPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {filteredItems.map((item) => (
           <Link key={item.id} href={`/items/${formatSlug(item.dname || '')}`} passHref>
-            <div className="bg-gray-800 p-3 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-gray-700 hover:border-blue-500 h-full">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 shadow-md p-3 rounded-lg flex flex-col items-center text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl h-full">
               <h2 className="text-lg font-semibold text-blue-400 mb-1">{item.dname}</h2>
+              {item.qual && (
+                <span className={`bg-white/5 backdrop-blur-sm border border-white/10 text-xs px-2 py-0.5 rounded-full mb-1 font-bold
+                  ${item.qual === 'consumable' ? 'text-green-400' :
+                    item.qual === 'common' ? 'text-gray-400' :
+                    item.qual === 'rare' ? 'text-blue-400' :
+                    item.qual === 'epic' ? 'text-purple-400' :
+                    item.qual === 'legendary' ? 'text-yellow-400' :
+                    item.qual === 'artifact' ? 'text-red-400' :
+                    item.qual === 'secret_shop' ? 'text-indigo-400' :
+                    item.qual === 'side_shop' ? 'text-pink-400' :
+                    item.qual === 'recipe' ? 'text-orange-400' :
+                    'text-gray-400' // Default
+                  }`}>
+                  {item.qual.replace('_', ' ').toUpperCase()}
+                </span>
+              )}
               {item.img && (
                 <img
                   src={`https://cdn.dota2.com${item.img}`}
@@ -94,7 +110,7 @@ export default function ItemsPage() {
                   title={item.notes} // Use title for tooltip
                 />
               )}
-              <p className="text-sm text-yellow-400 font-bold">{item.cost} gold</p>
+              <span className="bg-yellow-700 text-yellow-200 text-sm px-2 py-0.5 rounded-full font-bold">{item.cost} gold</span>
             </div>
           </Link>
         ))}

@@ -102,7 +102,53 @@ export default function HeroesPage() {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {filteredAndSortedHeroes.map((hero) => (
           <Link href={`/heroes/${hero.id}`} key={hero.id} className="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:scale-105 hover:shadow-xl border border-gray-700 hover:border-blue-500">
-            <h2 className="text-xl font-semibold text-blue-400 mb-2">{hero.localized_name}</h2>
+            <h2 className="text-xl font-semibold text-blue-400 mb-1">{hero.localized_name}</h2>
+            <span className={`text-sm font-medium mb-2
+              ${hero.primary_attr === 'str' ? 'text-red-400' :
+                hero.primary_attr === 'agi' ? 'text-green-400' :
+                hero.primary_attr === 'int' ? 'text-blue-400' :
+                'text-purple-400' // For 'all' attribute
+            }`}>
+              {hero.primary_attr.toUpperCase()}
+            </span>
+            {hero.roles && hero.roles.length > 0 && (() => {
+              let roleColorClass = 'text-gray-300'; // Default color
+              switch (hero.roles[0]) {
+                case 'Carry':
+                  roleColorClass = 'text-yellow-300';
+                  break;
+                case 'Support':
+                  roleColorClass = 'text-blue-300';
+                  break;
+                case 'Nuker':
+                  roleColorClass = 'text-red-300';
+                  break;
+                case 'Disabler':
+                  roleColorClass = 'text-purple-300';
+                  break;
+                case 'Initiator':
+                  roleColorClass = 'text-green-300';
+                  break;
+                case 'Durable':
+                  roleColorClass = 'text-orange-300';
+                  break;
+                case 'Escape':
+                  roleColorClass = 'text-cyan-300';
+                  break;
+                case 'Pusher':
+                  roleColorClass = 'text-lime-300';
+                  break;
+                case 'Jungler':
+                  roleColorClass = 'text-emerald-300';
+                  break;
+                // Add more roles and colors as needed
+              }
+              return (
+                <span className={`bg-white/10 backdrop-blur-sm border border-white/20 shadow-md ${roleColorClass} text-xs px-2 py-0.5 rounded-full mb-2`}>
+                  {hero.roles[0]}
+                </span>
+              );
+            })()}
             {hero.name && (
               <img
                 src={`https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/${hero.name.replace('npc_dota_hero_', '')}.png`}
@@ -110,8 +156,46 @@ export default function HeroesPage() {
                 className="w-24 h-auto mb-2 rounded-md border border-gray-600"
               />
             )}
-            <p className="text-sm text-gray-400">{hero.attack_type}</p>
-            <p className="text-xs text-gray-500">{hero.roles.join(', ')}</p>
+            <div className="flex flex-wrap justify-center gap-1 mt-1">
+              {hero.roles.map((role, index) => {
+                let roleColorClass = 'text-gray-300'; // Default color
+                switch (role) {
+                  case 'Carry':
+                    roleColorClass = 'text-yellow-300';
+                    break;
+                  case 'Support':
+                    roleColorClass = 'text-blue-300';
+                    break;
+                  case 'Nuker':
+                    roleColorClass = 'text-red-300';
+                    break;
+                  case 'Disabler':
+                    roleColorClass = 'text-purple-300';
+                    break;
+                  case 'Initiator':
+                    roleColorClass = 'text-green-300';
+                    break;
+                  case 'Durable':
+                    roleColorClass = 'text-orange-300';
+                    break;
+                  case 'Escape':
+                    roleColorClass = 'text-cyan-300';
+                    break;
+                  case 'Pusher':
+                    roleColorClass = 'text-lime-300';
+                    break;
+                  case 'Jungler':
+                    roleColorClass = 'text-emerald-300';
+                    break;
+                  // Add more roles and colors as needed
+                }
+                return (
+                  <span key={index} className={`bg-gray-700 ${roleColorClass} text-xs px-2 py-0.5 rounded-full`}>
+                    {role}
+                  </span>
+                );
+              })}
+            </div>
           </Link>
         ))}
       </div>

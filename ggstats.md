@@ -4,7 +4,7 @@
 
 ### a. Función Principal y Público Objetivo
 
-*   **Función Principal:** Crear una plataforma de análisis y estadísticas de *League of Legends* que no solo presente datos, sino que ofrezca *insights* personalizados y accionables para ayudar a los jugadores a mejorar de manera medible.
+*   **Función Principal:** Crear una plataforma de análisis y estadísticas de *League of Legends* y *Dota 2* que no solo presente datos, sino que ofrezca *insights* personalizados y accionables para ayudar a los jugadores a mejorar de manera medible.
 *   **Público Objetivo:**
     *   **Jugadores Competitivos (Primario):** Desde Hierro hasta Aspirante, que buscan activamente mejorar su rendimiento, entender el metajuego y analizar sus propias partidas.
     *   **Jugadores Casuales (Secundario):** Interesados en ver sus estadísticas, compararse con amigos y explorar builds populares de forma sencilla.

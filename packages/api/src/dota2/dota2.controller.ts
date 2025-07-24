@@ -58,6 +58,12 @@ export class Dota2Controller {
     return this.dota2Service.getItems();
   }
 
+  @Get('heroes/:heroId/stats')
+  @CacheTTL(300000) // 5 minutes
+  async getHeroCompleteStats(@Param('heroId') heroId: number): Promise<any> {
+    return this.dota2Service.getHeroCompleteStats(heroId);
+  }
+
   @Get('hero-stats')
   @CacheTTL(3600000) // 1 hour
   async getHeroStats(): Promise<any[]> {

@@ -234,7 +234,7 @@ const MatchDetailsPage: React.FC = () => {
     const ability = Object.values(abilities).find(a => a.id === abilityId);
     let imageUrl = '';
     if (ability?.img) {
-      imageUrl = `https://cdn.cloudflare.steamstatic.com${ability.img}`;
+      imageUrl = `https://cdn.dota2.com${ability.img}`;
     }
     return {
       name: ability?.dname || `Ability ID: ${abilityId}`,
@@ -297,7 +297,7 @@ const MatchDetailsPage: React.FC = () => {
                   <div className="mt-4">
                     <h4 className="text-lg font-semibold mb-2">Habilidades:</h4>
                     <div className="flex flex-wrap gap-1">
-                      {player.ability_upgrades_arr.map((abilityId, idx) => (
+                      {Array.isArray(player.ability_upgrades_arr) && player.ability_upgrades_arr.map((abilityId, idx) => (
                         abilityId !== 0 && (
                           <img
                             key={idx}
@@ -358,7 +358,7 @@ const MatchDetailsPage: React.FC = () => {
                   <div className="mt-4">
                     <h4 className="text-lg font-semibold mb-2">Habilidades:</h4>
                     <div className="flex flex-wrap gap-1">
-                      {player.ability_upgrades_arr.map((abilityId, idx) => (
+                      {Array.isArray(player.ability_upgrades_arr) && player.ability_upgrades_arr.map((abilityId, idx) => (
                         abilityId !== 0 && (
                           <img
                             key={idx}

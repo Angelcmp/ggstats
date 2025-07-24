@@ -1,5 +1,5 @@
 # Tareas Pendientes - ggstats
-
+# JULIO 2025
 ## Funcionalidades Implementadas
 
 - [x] **Integración con OpenDota API (Dota 2):**
@@ -67,7 +67,13 @@
 
 ## Próximas Funcionalidades (General)
 
-- [ ] **Implementar más cambios de estadísticas en la página web.**
+- [x] **Implementar más cambios de estadísticas en la página web.**
+    - Se mejoró la visualización de las tablas en la página de Meta Héroes, incluyendo:
+        - Encabezados de tabla mejorados.
+        - Colores de fila alternos (zebra striping).
+        - Ajuste de espaciado y relleno en celdas.
+        - Diseño mejorado de iconos de héroes (rectangulares, con borde y tamaño ajustado).
+        - Implementación de badge de rol principal con efecto glassmorphism y colores por rol.
 - [ ] **Mostrar User Rate y Win Rate para Ítems:**
     - **Estado Actual:** No es posible con el endpoint actual de OpenDota API. Requiere encontrar un nuevo endpoint o implementar lógica compleja de cálculo.
     - **Acciones Pendientes:** Investigar si OpenDota API ofrece un endpoint para estas estadísticas o considerar alternativas a futuro.
@@ -95,7 +101,7 @@
 - [ ] **Implementar Builds de Habilidades Populares en la página de detalles del héroe:**
     - **Estado Actual:** Los datos `ability_build` están disponibles, pero las imágenes de habilidades no cargan. Se necesita investigación o procesamiento adicional para las imágenes.
 
-- [ ] **Implementar Matchups (Buenos/Malos contra) en la página de detalles del héroe:**
+- [x] **Implementar Matchups (Buenos/Malos contra) en la página de detalles del héroe:**
     - **Estado Actual:** Los datos `matchups` están disponibles en `heroStats`, pero requieren procesamiento para una visualización elaborada.
 
 - [ ] **Implementar Compañeros de Equipo (Friends & Enemies) en la página de detalles del héroe:**

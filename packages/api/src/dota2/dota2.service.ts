@@ -131,6 +131,39 @@ export class Dota2Service {
     }
   }
 
+  async getHeroCompleteStats(heroId: number): Promise<any> {
+    try {
+      const [heroStatsResponse, matchupsResponse] = await Promise.all([
+        fetch(`${this.OPENDOTA_API_BASE_URL}/heroStats`),
+        fetch(`${this.OPENDOTA_API_BASE_URL}/heroes/${heroId}/matchups`),
+      ]);
+
+      if (!heroStatsResponse.ok) {
+        throw new Error(`OpenDota API Error (heroStats): ${heroStatsResponse.status} - ${heroStatsResponse.statusText}`);
+      }
+      if (!matchupsResponse.ok) {
+        throw new Error(`OpenDota API Error (matchups): ${matchupsResponse.status} - ${matchupsResponse.statusText}`);
+      }
+
+      const allHeroStats: any[] = await heroStatsResponse.json();
+      const matchups: any[] = await matchupsResponse.json();
+
+      const heroSpecificStats = allHeroStats.find(stat => stat.id === Number(heroId));
+
+      if (!heroSpecificStats) {
+        throw new Error(`Hero with ID ${heroId} not found in heroStats`);
+      }
+
+      return {
+        ...heroSpecificStats,
+        matchups,
+      };
+    } catch (error) {
+      console.error(`[Dota2Service] Error fetching complete hero stats for ID ${heroId}:`, error);
+      throw error;
+    }
+  }
+
   async getItemById(itemId: number): Promise<ItemDto | undefined> {
     try {
       const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/items`);
@@ -147,15 +180,44 @@ export class Dota2Service {
     }
   }
 
-  async getAbilities(): Promise<any> {
+  async getAbilities(): Promise<Record<number, AbilityDto>> {
     try {
-      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/constants/abilities`);
-      if (!response.ok) {
-        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      const [abilitiesResponse, heroesResponse] = await Promise.all([
+        fetch(`${this.OPENDOTA_API_BASE_URL}/constants/abilities`),
+        fetch(`${this.OPENDOTA_API_BASE_URL}/heroes`),
+      ]);
+
+      if (!abilitiesResponse.ok) {
+        throw new Error(`OpenDota API Error (abilities): ${abilitiesResponse.status} - ${abilitiesResponse.statusText}`);
       }
-      return response.json();
+      if (!heroesResponse.ok) {
+        throw new Error(`OpenDota API Error (heroes): ${heroesResponse.status} - ${heroesResponse.statusText}`);
+      }
+
+      const abilitiesByName: Record<string, any> = await abilitiesResponse.json();
+      const heroes: any[] = await heroesResponse.json();
+
+      const abilitiesById: Record<number, AbilityDto> = {};
+
+      heroes.forEach(hero => {
+        if (hero.abilities) {
+          hero.abilities.forEach((ability: any) => {
+            if (ability.id && ability.name && abilitiesByName[ability.name]) {
+              abilitiesById[ability.id] = {
+                id: ability.id,
+                name: ability.name,
+                localized_name: abilitiesByName[ability.name].dname || ability.name,
+                img: abilitiesByName[ability.name].img,
+                dname: abilitiesByName[ability.name].dname,
+              };
+            }
+          });
+        }
+      });
+
+      return abilitiesById;
     } catch (error) {
-      console.error('[Dota2Service] Error fetching abilities:', error);
+      console.error('[Dota2Service] Error fetching and processing abilities:', error);
       throw error;
     }
   }
@@ -216,6 +278,7 @@ export class Dota2Service {
           id: hero.id,
           name: hero.localized_name,
           img: `https://cdn.dota2.com${hero.img}`,
+          roles: hero.roles, // Añadir la propiedad roles
           mmr_stats,
         };
       });
