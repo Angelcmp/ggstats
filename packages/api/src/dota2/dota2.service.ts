@@ -9,6 +9,7 @@ import { MatchDetailsDto } from './dto/match-details.dto';
 import { ItemDto } from './dto/item.dto';
 import { AbilityDto } from './dto/ability.dto';
 import { MetaHeroDto } from './dto/meta-hero.dto';
+import { HeroCompleteStatsDto } from './dto/hero-complete-stats.dto';
 
 @Injectable()
 export class Dota2Service {
@@ -131,11 +132,12 @@ export class Dota2Service {
     }
   }
 
-  async getHeroCompleteStats(heroId: number): Promise<any> {
+  async getHeroCompleteStats(heroId: number): Promise<HeroCompleteStatsDto> {
     try {
-      const [heroStatsResponse, matchupsResponse] = await Promise.all([
+      const [heroStatsResponse, matchupsResponse, itemPopularityResponse] = await Promise.all([
         fetch(`${this.OPENDOTA_API_BASE_URL}/heroStats`),
         fetch(`${this.OPENDOTA_API_BASE_URL}/heroes/${heroId}/matchups`),
+        fetch(`${this.OPENDOTA_API_BASE_URL}/heroes/${heroId}/itemPopularity`),
       ]);
 
       if (!heroStatsResponse.ok) {
@@ -144,9 +146,13 @@ export class Dota2Service {
       if (!matchupsResponse.ok) {
         throw new Error(`OpenDota API Error (matchups): ${matchupsResponse.status} - ${matchupsResponse.statusText}`);
       }
+      if (!itemPopularityResponse.ok) {
+        throw new Error(`OpenDota API Error (itemPopularity): ${itemPopularityResponse.status} - ${itemPopularityResponse.statusText}`);
+      }
 
       const allHeroStats: any[] = await heroStatsResponse.json();
       const matchups: any[] = await matchupsResponse.json();
+      const itemPopularity: any[] = await itemPopularityResponse.json();
 
       const heroSpecificStats = allHeroStats.find(stat => stat.id === Number(heroId));
 
@@ -157,9 +163,23 @@ export class Dota2Service {
       return {
         ...heroSpecificStats,
         matchups,
+        item_popularity: itemPopularity,
       };
     } catch (error) {
       console.error(`[Dota2Service] Error fetching complete hero stats for ID ${heroId}:`, error);
+      throw error;
+    }
+  }
+
+  async getHeroItemPopularity(heroId: number): Promise<any> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/heroes/${heroId}/itemPopularity`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error(`[Dota2Service] Error fetching item popularity for hero ID ${heroId}:`, error);
       throw error;
     }
   }

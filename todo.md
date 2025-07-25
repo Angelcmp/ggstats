@@ -104,5 +104,13 @@
 - [x] **Implementar Matchups (Buenos/Malos contra) en la página de detalles del héroe:**
     - **Estado Actual:** Los datos `matchups` están disponibles en `heroStats`, pero requieren procesamiento para una visualización elaborada.
 
-- [ ] **Implementar Compañeros de Equipo (Friends & Enemies) en la página de detalles del héroe:**
-    - **Estado Actual:** Los datos `peers` están disponibles en `heroStats`, pero requieren procesamiento para una visualización elaborada.
+## Tareas Postergadas
+
+- [ ] **Investigar y Resolver el Error de Autorización de Riot API (401/403):**
+    - **Estado Actual:** El problema persiste a pesar de la verificación de la clave y el cambio de región. Se ha decidido pivotar a Dota 2 por ahora, pero esta tarea sigue siendo relevante si se retoma la integración con Riot API.
+    - **Estimación:** Altamente variable, desde 30 minutos hasta varias horas o incluso días.
+    - **Acciones Pendientes:**
+        - Reconfirmar la validez y permisos de la clave de desarrollo de Riot API para todas las APIs relevantes (LoL, Valorant, Account).
+        - Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
+        - Considerar el uso de un proxy o VPN si las restricciones de red son un problema.
+

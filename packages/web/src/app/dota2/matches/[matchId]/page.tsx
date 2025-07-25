@@ -51,7 +51,7 @@ interface MatchDetails {
   dire_captain: number;
 }
 
-interface PlayerInMatch {
+export interface PlayerInMatch {
   account_id: number;
   player_slot: number;
   hero_id: number;
@@ -136,11 +136,16 @@ interface Ability {
   dname: string;
 }
 
+import TeamDetails from './TeamDetails';
+import AdvantageGraphs from './AdvantageGraphs';
+import MatchResult from './MatchResult';
+
 const MatchDetailsPage: React.FC = () => {
   const { matchId } = useParams();
   const [matchDetails, setMatchDetails] = useState<MatchDetails | null>(null);
   const [items, setItems] = useState<Record<string, Item>>({});
   const [abilities, setAbilities] = useState<Record<string, Ability>>({});
+  const [heroes, setHeroes] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -175,7 +180,14 @@ const MatchDetailsPage: React.FC = () => {
         }
         const abilitiesData: Record<string, Ability> = await abilitiesResponse.json();
         setAbilities(abilitiesData);
-        console.log("Fetched Abilities Data:", abilitiesData);
+
+        // Fetch heroes
+        const heroesResponse = await fetch(`http://localhost:3002/dota2/heroes`);
+        if (!heroesResponse.ok) {
+          throw new Error(`Error fetching heroes: ${heroesResponse.statusText}`);
+        }
+        const heroesData = await heroesResponse.json();
+        setHeroes(heroesData);
 
       } catch (err: any) {
         setError(err.message);
@@ -220,25 +232,25 @@ const MatchDetailsPage: React.FC = () => {
 
   const getItemDetails = (itemId: number) => {
     const item = Object.values(items).find(i => i.id === itemId);
-    let imageUrl = '';
-    if (item?.img) {
-      imageUrl = `https://cdn.dota2.com${item.img}`;
-    }
     return {
       name: item?.localized_name || 'Unknown Item',
-      img: imageUrl,
+      img: item?.img ? `https://cdn.dota2.com${item.img}` : '',
     };
   };
 
   const getAbilityDetails = (abilityId: number) => {
     const ability = Object.values(abilities).find(a => a.id === abilityId);
-    let imageUrl = '';
-    if (ability?.img) {
-      imageUrl = `https://cdn.dota2.com${ability.img}`;
-    }
     return {
       name: ability?.dname || `Ability ID: ${abilityId}`,
-      img: imageUrl,
+      img: ability?.img ? `https://cdn.dota2.com${ability.img}` : '',
+    };
+  };
+
+  const getHeroDetails = (heroId: number) => {
+    const hero = Object.values(heroes).find(h => h.id === heroId);
+    return {
+      name: hero?.localized_name || 'Unknown Hero',
+      img: hero?.img || '',
     };
   };
 
@@ -249,132 +261,40 @@ const MatchDetailsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-6xl mx-auto bg-gray-800 rounded-lg shadow-lg p-8">
+      <div className="max-w-6xl mx-auto bg-black/20 backdrop-blur-lg border border-gray-700 rounded-lg shadow-lg p-8">
         <h1 className="text-4xl font-bold mb-6 text-center text-blue-400">Detalles de la Partida #{matchDetails.match_id}</h1>
-        <p className="text-center text-gray-400 mb-8">Duración: {formatDuration(matchDetails.duration)} | Hora de inicio: {new Date(matchDetails.start_time * 1000).toLocaleString()}</p>
+        <MatchResult
+          radiant_win={matchDetails.radiant_win}
+          radiant_score={matchDetails.radiant_score}
+          dire_score={matchDetails.dire_score}
+          duration={matchDetails.duration}
+        />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {/* Radiant Team */}
-          <div className="bg-gray-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-3xl font-semibold mb-4 text-green-400">Radiant {matchDetails.radiant_win ? '(Victoria)' : '(Derrota)'}</h2>
-            <div className="mb-4">
-              <p className="text-xl">Score: {matchDetails.radiant_score}</p>
-              <p className="text-xl">Torres: {matchDetails.tower_status_radiant}</p>
-              <p className="text-xl">Barracas: {matchDetails.barracks_status_radiant}</p>
-            </div>
-            <h3 className="text-2xl font-semibold mb-3 text-green-300">Jugadores</h3>
-            {radiantPlayers.map(player => (
-              <div key={`${player.account_id || 'anonymous'}-${player.player_slot}`} className="flex items-center bg-gray-600 p-3 rounded-lg mb-2">
-                <div>
-                  <p className="font-medium text-lg">{player.personaname || 'Anónimo'}</p>
-                  <p className="text-gray-300 text-sm">Hero ID: {player.hero_id}</p>
-                  <p className="text-gray-300 text-sm">KDA: {player.kills}/{player.deaths}/{player.assists}</p>
-                  <p className="text-gray-300 text-sm">GPM: {player.gold_per_min} | XPM: {player.xp_per_min}</p>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {[player.item_0, player.item_1, player.item_2, player.item_3, player.item_4, player.item_5].map((itemId, idx) => (
-                      itemId !== 0 && (
-                        <img
-                          key={idx}
-                          src={getItemDetails(itemId).img}
-                          alt={getItemDetails(itemId).name}
-                          className="w-8 h-8 rounded-sm border border-gray-600"
-                          title={getItemDetails(itemId).name}
-                        />
-                      )
-                    ))}
-                    {[player.backpack_0, player.backpack_1, player.backpack_2].map((itemId, idx) => (
-                      itemId !== 0 && (
-                        <img
-                          key={`bp-${idx}`}
-                          src={getItemDetails(itemId).img}
-                          alt={getItemDetails(itemId).name}
-                          className="w-6 h-6 rounded-sm border border-gray-700 opacity-75"
-                          title={getItemDetails(itemId).name}
-                        />
-                      )
-                    ))}
-                  </div>
-                  <div className="mt-4">
-                    <h4 className="text-lg font-semibold mb-2">Habilidades:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {Array.isArray(player.ability_upgrades_arr) && player.ability_upgrades_arr.map((abilityId, idx) => (
-                        abilityId !== 0 && (
-                          <img
-                            key={idx}
-                            src={getAbilityDetails(abilityId).img}
-                            alt={getAbilityDetails(abilityId).name}
-                            className="w-8 h-8 rounded-sm border border-gray-600"
-                            title={getAbilityDetails(abilityId).name}
-                          />
-                        )
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Dire Team */}
-          <div className="bg-gray-700 p-6 rounded-lg shadow-md">
-            <h2 className="text-3xl font-semibold mb-4 text-red-400">Dire {matchDetails.radiant_win ? '(Derrota)' : '(Victoria)'}</h2>
-            <div className="mb-4">
-              <p className="text-xl">Score: {matchDetails.dire_score}</p>
-              <p className="text-xl">Torres: {matchDetails.tower_status_dire}</p>
-              <p className="text-xl">Barracas: {matchDetails.barracks_status_dire}</p>
-            </div>
-            <h3 className="text-2xl font-semibold mb-3 text-red-300">Jugadores</h3>
-            {direPlayers.map(player => (
-              <div key={`${player.account_id || 'anonymous'}-${player.player_slot}`} className="flex items-center bg-gray-600 p-3 rounded-lg mb-2">
-                <div>
-                  <p className="font-medium text-lg">{player.personaname || 'Anónimo'}</p>
-                  <p className="text-gray-300 text-sm">Hero ID: {player.hero_id}</p>
-                  <p className="text-gray-300 text-sm">KDA: {player.kills}/{player.deaths}/{player.assists}</p>
-                  <p className="text-gray-300 text-sm">GPM: {player.gold_per_min} | XPM: {player.xp_per_min}</p>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {[player.item_0, player.item_1, player.item_2, player.item_3, player.item_4, player.item_5].map((itemId, idx) => (
-                      itemId !== 0 && (
-                        <img
-                          key={idx}
-                          src={getItemDetails(itemId).img}
-                          alt={getItemDetails(itemId).name}
-                          className="w-8 h-8 rounded-sm border border-gray-600"
-                          title={getItemDetails(itemId).name}
-                        />
-                      )
-                    ))}
-                    {[player.backpack_0, player.backpack_1, player.backpack_2].map((itemId, idx) => (
-                      itemId !== 0 && (
-                        <img
-                          key={`bp-${idx}`}
-                          src={getItemDetails(itemId).img}
-                          alt={getItemDetails(itemId).name}
-                          className="w-6 h-6 rounded-sm border border-gray-700 opacity-75"
-                          title={getItemDetails(itemId).name}
-                        />
-                      )
-                    ))}
-                  </div>
-                  <div className="mt-4">
-                    <h4 className="text-lg font-semibold mb-2">Habilidades:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {Array.isArray(player.ability_upgrades_arr) && player.ability_upgrades_arr.map((abilityId, idx) => (
-                        abilityId !== 0 && (
-                          <img
-                            key={idx}
-                            src={getAbilityDetails(abilityId).img}
-                            alt={getAbilityDetails(abilityId).name}
-                            className="w-8 h-8 rounded-sm border border-gray-600"
-                            title={getAbilityDetails(abilityId).name}
-                          />
-                        )
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col gap-8 mb-8">
+          <TeamDetails
+            teamName="Radiant"
+            players={radiantPlayers}
+            score={matchDetails.radiant_score}
+            towerStatus={matchDetails.tower_status_radiant}
+            barracksStatus={matchDetails.barracks_status_radiant}
+            teamColor="green"
+            win={matchDetails.radiant_win}
+            getHeroDetails={getHeroDetails}
+            getItemDetails={getItemDetails}
+            getAbilityDetails={getAbilityDetails}
+          />
+          <TeamDetails
+            teamName="Dire"
+            players={direPlayers}
+            score={matchDetails.dire_score}
+            towerStatus={matchDetails.tower_status_dire}
+            barracksStatus={matchDetails.barracks_status_dire}
+            teamColor="red"
+            win={!matchDetails.radiant_win}
+            getHeroDetails={getHeroDetails}
+            getItemDetails={getItemDetails}
+            getAbilityDetails={getAbilityDetails}
+          />
         </div>
 
         {/* Picks and Bans */}
@@ -386,9 +306,10 @@ const MatchDetailsPage: React.FC = () => {
                 <h3 className="text-2xl font-semibold mb-3 text-green-300">Radiant Picks & Bans</h3>
                 <div className="flex flex-wrap gap-2">
                   {matchDetails.picks_bans.filter(pb => pb.team === 0).map(pb => (
-                    <span key={pb.order} className={`px-4 py-2 rounded-full text-sm font-medium ${pb.is_pick ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-                      {pb.is_pick ? 'Pick' : 'Ban'}: Hero ID {pb.hero_id}
-                    </span>
+                    <div key={pb.order} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${pb.is_pick ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                      <img src={getHeroDetails(pb.hero_id).img} alt={getHeroDetails(pb.hero_id).name} className="w-8 h-8 rounded-full" />
+                      <span>{pb.is_pick ? 'Pick' : 'Ban'}: {getHeroDetails(pb.hero_id).name}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -396,9 +317,10 @@ const MatchDetailsPage: React.FC = () => {
                 <h3 className="text-2xl font-semibold mb-3 text-red-300">Dire Picks & Bans</h3>
                 <div className="flex flex-wrap gap-2">
                   {matchDetails.picks_bans.filter(pb => pb.team === 1).map(pb => (
-                    <span key={pb.order} className={`px-4 py-2 rounded-full text-sm font-medium ${pb.is_pick ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
-                      {pb.is_pick ? 'Pick' : 'Ban'}: Hero ID {pb.hero_id}
-                    </span>
+                    <div key={pb.order} className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${pb.is_pick ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`}>
+                      <img src={getHeroDetails(pb.hero_id).img} alt={getHeroDetails(pb.hero_id).name} className="w-8 h-8 rounded-full" />
+                      <span>{pb.is_pick ? 'Pick' : 'Ban'}: {getHeroDetails(pb.hero_id).name}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -406,37 +328,7 @@ const MatchDetailsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Gold and XP Advantage Graphs */}
-        <div className="bg-gray-700 p-6 rounded-lg shadow-md">
-          <h2 className="text-3xl font-semibold mb-4 text-cyan-400">Gráficos de Ventaja (Oro/XP)</h2>
-          <div className="mb-8">
-            <h3 className="text-2xl font-semibold mb-2 text-blue-300">Ventaja de Oro</h3>
-            <ResponsiveContainer key="gold-advantage-chart" width="100%" height={300}>
-              <LineChart data={goldAdvantageData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-                <XAxis dataKey="minute" stroke="#cbd5e0" />
-                <YAxis stroke="#cbd5e0" />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="goldAdv" stroke="#f6e05e" name="Ventaja de Oro" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div>
-            <h3 className="text-2xl font-semibold mb-2 text-blue-300">Ventaja de Experiencia</h3>
-            <ResponsiveContainer key="xp-advantage-chart" width="100%" height={300}>
-              <LineChart data={xpAdvantageData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
-                <XAxis dataKey="minute" stroke="#cbd5e0" />
-                <YAxis stroke="#cbd5e0" />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="xpAdv" stroke="#82ca9d" name="Ventaja de Experiencia" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <AdvantageGraphs goldAdvantageData={goldAdvantageData} xpAdvantageData={xpAdvantageData} />
 
       </div>
     </div>
