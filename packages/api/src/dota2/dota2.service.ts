@@ -311,4 +311,43 @@ export class Dota2Service {
       throw error;
     }
   }
+
+  async getProPlayers(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/proPlayers`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching pro players:', error);
+      throw error;
+    }
+  }
+
+  async getPublicMatches(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/publicMatches`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching public matches:', error);
+      throw error;
+    }
+  }
+
+  async getRankings(): Promise<any> {
+    try {
+      const response = await fetch(`${this.OPENDOTA_API_BASE_URL}/rankings`);
+      if (!response.ok) {
+        throw new Error(`OpenDota API Error: ${response.status} - ${response.statusText}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('[Dota2Service] Error fetching rankings:', error);
+      throw error;
+    }
+  }
 }

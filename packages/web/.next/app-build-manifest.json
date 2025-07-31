@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/items/page": [
+    "/pro-players/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/items/page.js"
+      "static/chunks/app/pro-players/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,20 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/heroes/page": [
+    "/players/[accountId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/heroes/page.js"
-    ],
-    "/heroes/[heroId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/heroes/[heroId]/page.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/players/[accountId]/page.js"
     ]
   }
 }

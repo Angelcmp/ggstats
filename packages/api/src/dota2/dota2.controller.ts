@@ -90,4 +90,22 @@ export class Dota2Controller {
   ): Promise<MetaHeroDto[]> {
     return this.dota2Service.getMetaHeroes(lobbyType, date);
   }
+
+  @Get('pro-players')
+  @CacheTTL(3600000) // 1 hour
+  async getProPlayers(): Promise<any[]> {
+    return this.dota2Service.getProPlayers();
+  }
+
+  @Get('public-matches')
+  @CacheTTL(300000) // 5 minutes
+  async getPublicMatches(): Promise<any[]> {
+    return this.dota2Service.getPublicMatches();
+  }
+
+  @Get('rankings')
+  @CacheTTL(3600000) // 1 hour
+  async getRankings(): Promise<any> {
+    return this.dota2Service.getRankings();
+  }
 }

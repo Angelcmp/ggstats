@@ -17,6 +17,23 @@
     - Se añadió el endpoint de lista de partidas de Valorant (`/riot-api/valorant/matchlist/:region/:gameName/:tagLine`).
     - Se corrigieron errores de sintaxis en `riot-api.service.ts` y `riot-api.controller.ts`.
 
+- [x] **Explorar otras funcionalidades de la API de OpenDota:**
+    - [x] Se añadieron endpoints en el backend para `proPlayers`, `publicMatches` y `rankings`.
+    - [x] Se implementó la página de "Pro Players" con búsqueda, filtro por región competitiva y banderas de países.
+    - [x] Se implementó la página de "Public Matches".
+    - [x] Se implementó la página de "Rankings".
+    - [x] Se añadió un enlace a "Pro Players" en la barra de navegación.
+    - [x] Se implementó la página de perfil de jugador (`/players/[accountId]`) con estadísticas, win/loss y partidas recientes con detalles de héroes.
+
+- [x] **Mejoras en la interfaz visual:**
+    - [x] Se aplicó un diseño similar al de "Meta Heroes" en la página de "Pro Players".
+    - [x] Se integraron banderas de países en las tarjetas de jugadores.
+
+- [x] **Corrección de errores:**
+    - [x] Se corrigió el error `ECONNREFUSED` ajustando el puerto del proxy en `next.config.mjs`.
+    - [x] Se corrigió el error `Cannot read properties of undefined (reading 'toLowerCase')` en el buscador de jugadores.
+    - [x] Se desinstaló y eliminó la referencia a `@stagewise/toolbar-next` para resolver errores de ejecución.
+
 ## Prioridad Alta (Pendiente)
 
 - [ ] **Investigar y Resolver el Error de Autorización de Riot API (401/403):**
@@ -85,11 +102,8 @@
     - [ ] Revisar y mejorar la estructura del código, aplicando principios SOLID y patrones de diseño.
     - [ ] Eliminar código comentado o temporal.
 
-- [ ] **Implementar la página de detalles de ítems:**
+- [x] **Implementar la página de detalles de ítems:**
     - **Acciones Pendientes:** Crear una página para cada ítem donde se muestren sus propiedades, lore, etc.
-
-- [ ] **Explorar otras funcionalidades de la API de OpenDota:**
-    - **Acciones Pendientes:** Investigar otros endpoints para añadir más datos (ej. rankings, pro players, etc.).
 
 - [ ] **Trabajar en el diseño general:**
     - **Acciones Pendientes:** Mejorar la estética y la experiencia de usuario en otras partes de la aplicación.
@@ -113,4 +127,3 @@
         - Reconfirmar la validez y permisos de la clave de desarrollo de Riot API para todas las APIs relevantes (LoL, Valorant, Account).
         - Investigar posibles restricciones de IP o límites de tasa que puedan estar afectando la clave.
         - Considerar el uso de un proxy o VPN si las restricciones de red son un problema.
-
